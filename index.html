@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пасхальная игра: Найди яйца!</title>
+    <style>
+        body {
+            background-image: url('https://avatars.mds.yandex.net/i?id=498da3293d13ebdaddbe9286418d48ba1d44e1e6-9182174-images-thumbs&n=13');
+            background-size: cover; /* Заполняет весь экран */
+            background-position: center; /* Центрирует изображение */
+            background-repeat: no-repeat; /* Не повторяет изображение */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0; /* Убирает отступы по умолчанию */
+            height: 100vh; /* Высота равна высоте окна */
+        }
+        h1 {
+            color: #990000;
+        }
+        .egg {
+            position: absolute;
+            cursor: pointer;
+        }
+        #score {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Найди пасхальные яйца!</h1>
+    <p>Нажимай на яйца, чтобы собрать их! У тебя есть 30 секунд!</p>
+    <div id="score">Счет: 0</div>
+    <button id="startBtn">Начать игру</button>
+
+    <script>
+        const eggImages = [
+            'egg1-removebg-preview.png',
+            'egg2-removebg-preview.png',
+            'egg3-removebg-preview.png'
+        ];
+        let score = 0;
+        let gameDuration = 30;
+        let gameInterval;
+
+        function startGame() {
+            score = 0;
+            document.getElementById('score').innerText = `Счет: ${score}`;
+            gameDuration = 30;
+            const timer = setInterval(() => {
+                gameDuration--;
+                if (gameDuration <= 0) {
+                    clearInterval(timer);
+                    alert(`Время вышло! Ваш итоговый счет: ${score}`);
+                    clearGame();
+                }
+            }, 1000);
+
+            gameInterval = setInterval(createEgg, 1000);
+        }
+
+        function createEgg() {
+            const egg = document.createElement('img');
+            egg.src = eggImages[Math.floor(Math.random() * eggImages.length)];
+            egg.className = 'egg';
+            egg.style.width = '50px';
+            egg.style.left = Math.random() * (window.innerWidth - 50) + 'px';
+            egg.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+            egg.onclick = () => {
+                score++;
+                document.getElementById('score').innerText = `Счет: ${score}`;
+                egg.remove();
+            };
+            document.body.appendChild(egg);
+
+            // Удаляем яйцо через 2 секунды, если игрок не успел его собрать
+            setTimeout(() => {
+                egg.remove();
+            }, 2000);
+        }
+
+        function clearGame() {
+            clearInterval(gameInterval);
+            const eggs = document.querySelectorAll('.egg');
+            eggs.forEach(egg => egg.remove());
+        }
+        
+        document.getElementById('startBtn').onclick = startGame;
+    </script>
+
+</body>
+</html>
+
